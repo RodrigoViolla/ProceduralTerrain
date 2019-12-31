@@ -11,6 +11,9 @@ public class ObjectRotation : MonoBehaviour
 
     void Update()
     {
-        transform.LookAt(player.transform, Vector3.up);
+        var lookPos = player.transform.position - transform.position;
+        lookPos.y = 0;
+        var rotation = Quaternion.LookRotation(lookPos);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime);
     }
 }

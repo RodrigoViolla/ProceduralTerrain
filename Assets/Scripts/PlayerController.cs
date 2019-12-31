@@ -25,8 +25,18 @@ public class PlayerController : MonoBehaviour
             // We are grounded, so recalculate
             // move direction directly from axes
 
-            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
+            moveDirection = transform.forward * Input.GetAxis("Vertical");
             moveDirection *= speed;
+
+            if(Input.GetAxis("Horizontal") > 0)
+            {
+                transform.Rotate(new Vector3(0, 1, 0) , Space.Self); 
+            }
+
+            if(Input.GetAxis("Horizontal") < 0)
+            {
+                transform.Rotate(new Vector3(0, -1, 0) , Space.Self); 
+            }
 
             if (Input.GetButton("Jump"))
             {
