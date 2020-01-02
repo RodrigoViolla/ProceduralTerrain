@@ -10,6 +10,7 @@ public class IsleTerrain : MonoBehaviour
     public Material material;
     [Range(0, 6)]
     public int levelOfDetail;
+    public Material waterMaterial;
 
     public MapObjectData[] objects;
     const float scale = 5f;
@@ -42,15 +43,56 @@ public class IsleTerrain : MonoBehaviour
     void OnMapDataReceived(MapData mapData){
         Texture2D texture = TextureGenerator.TextureFromColorMap(mapData.colourMap, MapGenerator.mapChunkSize, MapGenerator.mapChunkSize);
         meshRenderer.material.mainTexture = texture;
-        
+
+        GameObject waterObj = new GameObject("water");
+        MeshRenderer waterRenderer = waterObj.AddComponent<MeshRenderer>();
+        MeshFilter waterMeshFilter = waterObj.AddComponent<MeshFilter>();
+        waterRenderer.material = waterMaterial;
+        waterMeshFilter.mesh = GenerateWaterMesh(mapData.heightMap, levelOfDetail).CreateMesh();
+
+        meshFilter.mesh = GenerateWaterMesh(mapData.heightMap, levelOfDetail).CreateMesh();
         mapGenerator.RequestMeshData(mapData, levelOfDetail, OnMeshDataReceived);        
     }
 
     void OnMeshDataReceived(MeshData meshData)
     {
-        meshFilter.mesh = meshData.CreateMesh();
+        meshFilter.mesh = meshData.CreateMesh();       
+
         meshObject.AddComponent<MeshCollider>();        
         PlaceObjects(meshData);
+    }
+
+    public static MeshData GenerateWaterMesh(float[,] heightMap, int levelOfDetail)
+    {        
+        int width = heightMap.GetLength(0);
+        int height = heightMap.GetLength(1);
+        float topLeftX = (width - 1f) / -2f;
+        float topLeftZ = (height - 1f) / 2f;
+        
+        MeshData meshData = new MeshData(width, height);
+        int meshSimplificationIncrement = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
+        int verticesPerLine = (width - 1) / meshSimplificationIncrement + 1;
+
+        int vertexIndex = 0;
+
+        for (int y = 0; y < height; y += meshSimplificationIncrement)
+        {
+            for (int x = 0; x < width; x += meshSimplificationIncrement)
+            {
+                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, 0, topLeftZ - y);
+                meshData.uvs[vertexIndex] = new Vector2(x / (float)width, y / (float)height);
+
+                if(x < width-1 && y < height - 1)
+                {
+                    meshData.AddTriangle(vertexIndex, vertexIndex + verticesPerLine + 1, vertexIndex + verticesPerLine);
+                    meshData.AddTriangle(vertexIndex + verticesPerLine + 1, vertexIndex, vertexIndex + 1);
+                }
+
+                vertexIndex++;
+            }
+        }
+
+        return meshData;
     }
 
     void PlaceObjects(MeshData meshData)

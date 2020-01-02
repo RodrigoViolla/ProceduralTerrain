@@ -1,7 +1,8 @@
-Shader "ProceduralMap/Waves" 
+Shader "ProceduralMap/Terrain" 
 {
-	Properties 
+Properties 
 	{
+		_MainTex("Texture", 2d) = "white" {}
 		_Color("Color", Color) = (1,0,0,1)
 		_SpecColor("Specular Material Color", Color) = (1,1,1,1)
 		_Shininess("Shininess", Float) = 1.0
@@ -41,6 +42,7 @@ Shader "ProceduralMap/Waves"
 			float _WaveSpeed;
 			float _RandomHeight;
 			float _RandomSpeed;
+			sampler2D _MainTex;
 			
 			uniform float4 _LightColor0;
 
@@ -68,10 +70,7 @@ Shader "ProceduralMap/Waves"
 			{
 				float3 v0 = mul(1, v.vertex).xyz;
 
-				float phase0 = (_WaveHeight)* sin((_Time[1] * _WaveSpeed) + (v0.x * _WaveLength) + (v0.z * _WaveLength) + rand2(v0.xzz));
-				float phase0_1 = (_RandomHeight)*sin(cos(rand(v0.xzz) * _RandomHeight * cos(_Time[1] * _RandomSpeed * sin(rand(v0.xxz)))));
 				
-				v0.y += phase0 + phase0_1;
 
 				v.vertex.xyz = mul((float3x3)unity_WorldToObject, v0);
 
@@ -150,7 +149,7 @@ Shader "ProceduralMap/Waves"
 			half4 frag(g2f IN) : COLOR
 			{
 				return float4(IN.specularColor +
-				IN.diffuseColor, 1.0);
+				IN.diffuseColor + tex2D(_MainTex, IN.uv), 1.0);
 			}
 			
 			ENDCG
