@@ -10,6 +10,7 @@ Shader "ProceduralMap/Waves"
 		_WaveSpeed("Wave speed", Float) = 1.0
 		_RandomHeight("Random height", Float) = 0.5
 		_RandomSpeed("Random Speed", Float) = 0.5
+		_Transparency("Transparency", Float) = 0.5
 	}
 	SubShader 
 	{
@@ -41,6 +42,7 @@ Shader "ProceduralMap/Waves"
 			float _WaveSpeed;
 			float _RandomHeight;
 			float _RandomSpeed;
+			float _Transparency;
 			
 			uniform float4 _LightColor0;
 
@@ -149,8 +151,12 @@ Shader "ProceduralMap/Waves"
 			
 			half4 frag(g2f IN) : COLOR
 			{
-				return float4(IN.specularColor +
+				float4 ret = float4(IN.specularColor +
 				IN.diffuseColor, 1.0);
+
+				ret.a = _Transparency;
+
+				return ret;
 			}
 			
 			ENDCG

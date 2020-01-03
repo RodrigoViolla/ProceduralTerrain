@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class IsleTerrain : MonoBehaviour
 {
-
-    public GameObject tree;
     public GameObject viewer;
     public Material material;
     [Range(0, 6)]
     public int levelOfDetail;
     public Material waterMaterial;
+
+    public float waterLevel;
 
     public MapObjectData[] objects;
     const float scale = 5f;
@@ -52,6 +52,7 @@ public class IsleTerrain : MonoBehaviour
 
         meshFilter.mesh = GenerateWaterMesh(mapData.heightMap, levelOfDetail).CreateMesh();
         mapGenerator.RequestMeshData(mapData, levelOfDetail, OnMeshDataReceived);        
+        waterObj.transform.position = new Vector3(waterObj.transform.position.x, waterLevel, waterObj.transform.position.z);
     }
 
     void OnMeshDataReceived(MeshData meshData)
@@ -99,14 +100,21 @@ public class IsleTerrain : MonoBehaviour
     {
         foreach (Vector3 position in meshData.vertices)
         {
-
             foreach (MapObjectData mapObjectData in objects)
             {
                 if(Random.Range(1, 100) < mapObjectData.spawnProbability)
                 {
                     if(position.y > mapObjectData.spawnHeightRange.x && position.y <= mapObjectData.spawnHeightRange.y)
-                    {                        
-                        Instantiate(mapObjectData.prefab, position, Quaternion.identity);
+                    {             
+                        float randomRange = 1;    
+                        RaycastHit hit; 
+                        
+                        Vector3 randomPosition = new Vector3(position.x + Random.Range(-randomRange, randomRange), position.y, position.z + Random.Range(randomRange, randomRange));
+                        Physics.Raycast(randomPosition, Vector3.down, out hit);
+
+                        randomPosition = hit.point;
+
+                        Instantiate(mapObjectData.prefab, randomPosition, Quaternion.identity);
                     }
                 }
             }            

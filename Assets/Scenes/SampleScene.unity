@@ -260,7 +260,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -387,7 +387,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1044601082}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children:
   - {fileID: 534669905}
@@ -567,12 +567,12 @@ MonoBehaviour:
   drawMode: 1
   normalizeMode: 1
   editorPreviewLOD: 0
-  noiseScale: 36.6
+  noiseScale: 30
   useFalloff: 1
   octaves: 4
   persistance: 0.4
   lacunarity: 2.04
-  seed: 1
+  seed: 0
   offset: {x: 0, y: 0}
   meshHeightMultiplier: 15
   meshHeightCurve:
@@ -587,15 +587,6 @@ MonoBehaviour:
       weightedMode: 0
       inWeight: 0
       outWeight: 0
-    - serializedVersion: 3
-      time: 0.4
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.0670436
     - serializedVersion: 3
       time: 1
       value: 1
@@ -691,7 +682,15 @@ MonoBehaviour:
   levelOfDetail: 0
   waterMaterial: {fileID: 2100000, guid: cefc81f696d051fe0a63a3bf100f4aa7, type: 2}
   objects:
-  - spawnProbability: 69
-    spawnHeightRange: {x: 0.7, y: 3}
+  - spawnProbability: 70
+    spawnHeightRange: {x: 2, y: 3}
     prefab: {fileID: 5023047295583571117, guid: 4cd4133bf3d157e6c99c6e8526d01973,
+      type: 3}
+  - spawnProbability: 30
+    spawnHeightRange: {x: 11, y: 100}
+    prefab: {fileID: 8891186280151195300, guid: 6f91160ef953bb19fb6935c5497d9531,
+      type: 3}
+  - spawnProbability: 75
+    spawnHeightRange: {x: 2, y: 100}
+    prefab: {fileID: 3782877151046001660, guid: def26a6047e4d315bab2151b9035072b,
       type: 3}
