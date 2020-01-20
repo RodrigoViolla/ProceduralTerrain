@@ -8,7 +8,7 @@ public static class TextureGenerator
     {
         Texture2D texture = new Texture2D(width, height);
         //texture.filterMode = FilterMode.Point;
-        //texture.wrapMode = TextureWrapMode.Clamp;
+        texture.wrapMode = TextureWrapMode.Clamp;
         texture.SetPixels(colorMap);
         texture.Apply();
 
@@ -20,7 +20,7 @@ public static class TextureGenerator
         int width = heightMap.GetLength(0);
         int height = heightMap.GetLength(1);
 
-        Color[] colourMap = new Color[(width*2) * (height*2)];
+        Color[] colourMap = new Color[width * height];
 
         for (int y = 0; y < height; y++)
         {

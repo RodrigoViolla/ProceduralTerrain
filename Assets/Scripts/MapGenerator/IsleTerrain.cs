@@ -58,8 +58,8 @@ public class IsleTerrain : MonoBehaviour
     void OnMeshDataReceived(MeshData meshData)
     {
         meshFilter.mesh = meshData.CreateMesh();       
-
-        meshObject.AddComponent<MeshCollider>();        
+        MeshCollider collider = meshObject.AddComponent<MeshCollider>();        
+        collider.sharedMesh = meshFilter.mesh;
         PlaceObjects(meshData);
     }
 
@@ -70,7 +70,7 @@ public class IsleTerrain : MonoBehaviour
         float topLeftX = (width - 1f) / -2f;
         float topLeftZ = (height - 1f) / 2f;
         
-        MeshData meshData = new MeshData(width, height);
+        MeshData meshData = new MeshData(width, true);
         int meshSimplificationIncrement = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
         int verticesPerLine = (width - 1) / meshSimplificationIncrement + 1;
 
@@ -80,9 +80,8 @@ public class IsleTerrain : MonoBehaviour
         {
             for (int x = 0; x < width; x += meshSimplificationIncrement)
             {
-                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, 0, topLeftZ - y);
-                meshData.uvs[vertexIndex] = new Vector2(x / (float)width, y / (float)height);
-
+                meshData.AddVertex(new Vector3(topLeftX + x, 0, topLeftZ - y), new Vector2(x / (float)width, y / (float)height), vertexIndex);
+                
                 if(x < width-1 && y < height - 1)
                 {
                     meshData.AddTriangle(vertexIndex, vertexIndex + verticesPerLine + 1, vertexIndex + verticesPerLine);
@@ -98,7 +97,7 @@ public class IsleTerrain : MonoBehaviour
 
     void PlaceObjects(MeshData meshData)
     {
-        foreach (Vector3 position in meshData.vertices)
+        foreach (Vector3 position in meshData.Vertices)
         {
             foreach (MapObjectData mapObjectData in objects)
             {
